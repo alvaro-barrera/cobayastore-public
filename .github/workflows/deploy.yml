@@ -41,10 +41,15 @@ jobs:
           NODE_ENV: production
         working-directory: 'source'
         
+      - name: Copy build to repository root
+        run: |
+          cp -r source/dist/* ./
+          ls -la
+        
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: './source/dist'
+          publish_dir: './'
           publish_branch: gh-pages
           force_orphan: true
