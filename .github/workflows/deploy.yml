@@ -17,6 +17,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout public repository
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+          
       - name: Checkout private repository for build only
         uses: actions/checkout@v4
         with:
