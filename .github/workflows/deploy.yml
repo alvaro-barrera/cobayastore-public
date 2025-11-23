@@ -14,32 +14,37 @@ permissions:
   id-token: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout private repository for build
+      - name: Checkout private repository for build only
         uses: actions/checkout@v4
         with:
           repository: alvaro-barrera/cobayastore
           token: ${{ secrets.PAT_TOKEN }}
+          path: 'source'
           
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: 'source/package-lock.json'
           
       - name: Install dependencies
         run: npm ci
+        working-directory: 'source'
         
       - name: Build with optimization
         run: npm run build:prod
         env:
           NODE_ENV: production
-          
-      - name: Deploy to GitHub Pages
+        working-directory: 'source'
+        
+      - name: Deploy ONLY build to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.PAT_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: './source/dist'
           publish_branch: gh-pages
+          force_orphan: true
