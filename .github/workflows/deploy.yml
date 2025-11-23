@@ -14,7 +14,7 @@ permissions:
   id-token: write
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout private repository for build only
@@ -41,10 +41,24 @@ jobs:
           NODE_ENV: production
         working-directory: 'source'
         
-      - name: Deploy ONLY build to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Upload build artifacts
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.PAT_TOKEN }}
-          publish_dir: './source/dist'
-          publish_branch: gh-pages
-          force_orphan: true
+          path: './source/dist'
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
