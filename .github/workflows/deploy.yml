@@ -17,18 +17,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout public repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
+      - name: Checkout public repository manually
+        run: |
+          git clone https://github.com/alvaro-barrera/cobayastore-public.git .
+          git checkout main
           
-      - name: Checkout private repository for build only
-        uses: actions/checkout@v4
-        with:
-          repository: alvaro-barrera/cobayastore
-          token: ${{ secrets.PAT_TOKEN }}
-          path: 'source'
-          fetch-depth: 1
+      - name: Checkout private repository manually
+        run: |
+          git clone https://github.com/alvaro-barrera/cobayastore.git source
+          cd source
+          git checkout main
           
       - name: Setup Node.js
         uses: actions/setup-node@v4
