@@ -24,7 +24,7 @@ jobs:
           
       - name: Checkout private repository manually
         run: |
-          git clone https://github.com/alvaro-barrera/cobayastore.git source
+          git clone https://${{ secrets.PAT_TOKEN }}@github.com/alvaro-barrera/cobayastore.git source
           cd source
           git checkout main
           
